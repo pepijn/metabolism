@@ -35,7 +35,7 @@ list =
     products:   '2-phosphoglycerate'
   'Enolase':
     substrates: '2-phosphoglycerate'
-    products:   ['Phosphoenolpyruvate', 'H2O']
+    products:   ['H2O', 'Phosphoenolpyruvate']
   'Pyruvate kinase':
     substrates: ['Phosphoenolpyruvate', 'ADP']
     products:   ['Pyruvate', 'ATP']

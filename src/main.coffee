@@ -1,9 +1,7 @@
 window.enzymes = {}
-window.molecules = []
 
 template =
   enzyme: $('.enzyme')
-  molecule: $('.molecule')
 
 cell =
   cytoplasm: $('#cytoplasm')
@@ -25,7 +23,7 @@ list =
     substrates: ['Dihydroxyacetone phosphate']
     products:   ['Glyceraldehyde 3-phosphate']
   'Glyceraldehyde-3-phosphate dehydrogenase':
-    substrates: ['Glyceraldehyde 3-phosphate', 'Pi', 'NAD+']
+    substrates: ['Glyceraldehyde 3-phosphate', 'NAD+', 'Pi']
     products:   ['1,3-bisphosphate glycerate', 'NADH']
   'Phosphoglycerate kinase':
     substrates: ['1,3-bisphosphate glycerate', 'ADP']
@@ -92,8 +90,6 @@ class Enzyme extends Unit
 
       @element.effect('highlight')
       @element.removeClass('occupied')
-
-
 
 for name of list
   enzyme = list[name]

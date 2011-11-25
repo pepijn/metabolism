@@ -21,69 +21,79 @@ list =
   'Aldolase':
     substrates: 'Fructose 1,6-biphosphate'
     products:   ['Dihydroxyacetone phosphate', 'Glyceraldehyde 3-phosphate']
-
-elname = (element) ->
-  element.text().replace(/^\s+|\s+$/g, '')
+  'Triose phosphate isomerase':
+    substrates: ['Dihydroxyacetone phosphate']
+    products:   ['Glyceraldehyde 3-phosphate']
+  'Glyceraldehyde-3-phosphate dehydrogenase':
+    substrates: ['Glyceraldehyde 3-phosphate', 'Pi', 'NAD+']
+    products:   ['1,3-bisphosphate glycerate', 'NADH']
+  'Phosphoglycerate kinase':
+    substrates: ['1,3-bisphosphate glycerate', 'ADP']
+    products:   ['3-phosphoglycerate', 'ATP']
+  'Phosphoglycerate mutase':
+    substrates: '3-phosphoglycerate'
+    products:   '2-phosphoglycerate'
+  'Enolase':
+    substrates: '2-phosphoglycerate'
+    products:   ['Phosphoenolpyruvate', 'H2O']
+  'Pyruvate kinase':
+    substrates: ['Phosphoenolpyruvate', 'ADP']
+    products:   ['Pyruvate', 'ATP']
 
 molecule = (element) ->
-  window.molecules[element.attr('id').replace('molecule-', '')]
+  element.text().replace(/^\s+|\s+$/g, '')
+#
+# molecule = (element) ->
+#   window.molecules[element.attr('id').replace('molecule-', '')]
 
 class Unit
   constructor: ->
     @id = @name.toLowerCase().replace(' ', '-')
 
   build: (template) ->
-    template.clone().attr('id', @id).text(@name).appendTo(cytoplasm)
+    @element = template.clone().attr('id', @id).text(@name)
+    @element.appendTo(cytoplasm)
 
 class Enzyme extends Unit
   constructor: (@name, substrates, products) ->
     super()
     @substrates = _.flatten [substrates]
     @products   = _.flatten [products]
-    @bindings = []
+    @bindings   = []
 
   accepts: (substrate) ->
-    true if _.include(_.difference(@substrates, @molecules()), substrate.name)
+    _.include(_.difference(@substrates, @molecules()), molecule(substrate))
 
   bind: (molecule) ->
     if @accepts(molecule)
-      molecule.bind()
       @bindings.push molecule
+      molecule.draggable('disable')
+
+      @element.addClass('occupied')
 
       # Probeer de reactie
       @react()
 
   molecules: ->
-    _.map(@bindings, (molecule) -> molecule.name)
+    _.map(@bindings, (element) -> molecule(element))
 
   react: ->
     if @bindings.length == @substrates.length
-      @bindings.push @bindings[0].clone() #if @bindings.length < @products.length
+      for product in @products
+        binding = if _i >= @bindings.length then @bindings[0] else @bindings[_i]
+        product = binding.clone().appendTo(binding.parent()).text(product)
 
-      for molecule in @bindings
-        index = _.indexOf(@substrates, molecule.name)
-        product = @products[index]
+        $('.molecule').removeClass('ui-draggable-disabled').draggable()
+        product.effect('highlight')
 
-        molecule.release(product)
+      for binding in @bindings
+        binding.hide('puff')
+      @bindings = []
 
-      # @bindings = []
+      @element.effect('highlight')
+      @element.removeClass('occupied')
 
 
-class Molecule extends Unit
-  constructor: (@name) ->
-    number = window.molecules.length
-    window.molecules.push this
-    @id = 'molecule-' + number
-    @element = @build(template.molecule)
-
-  bind: ->
-    @element.draggable('disable')
-
-  release: (name) ->
-    @name = name
-    @element.text(@name)
-    @element.effect('highlight')
-    @element.draggable('enable')
 
 for name of list
   enzyme = list[name]
@@ -96,18 +106,13 @@ for name of list
       activate: (event, ui) ->
         enzyme = enzymes[$(this).attr('id')]
 
-        $(this).addClass('active') if enzyme.accepts(molecule(ui.draggable))
+        $(this).addClass('active') if enzyme.accepts(ui.draggable)
       deactivate: ->
         $(this).removeClass('active')
 
       drop: (event, ui) ->
         enzyme = enzymes[$(this).attr('id')]
-        enzyme.bind(molecule(ui.draggable))
+        enzyme.bind(ui.draggable)
   	})
-
-new Molecule "Glucose"
-new Molecule "ATP"
-new Molecule "Fructose 1,6-biphosphate"
-new Molecule "ATP"
 
 $('.molecule').draggable()

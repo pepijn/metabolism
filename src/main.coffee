@@ -81,9 +81,6 @@ list =
 convert = (string) ->
   string.toLowerCase().replace /\s|[+]/gi, '-'
 
-# molecule = (element) ->
-#   window.molecules[element.attr('id').replace('molecule-', '')]
-
 add_molecule = (substrate, name) ->
   molecule = substrate.clone().text(name)
 
@@ -202,10 +199,7 @@ for name of list
         enzyme.bind(ui.draggable)
   	})
 
-# if false
-  # $('.molecule').draggable({ snap: '.enzyme', snapMode: 'inner' })
-# else
-  # $('.enzyme').draggable({ grid: [20, 10] })
+# $('.enzyme').draggable({ grid: [20, 10] })
 
 window.positions = ->
   log = ''

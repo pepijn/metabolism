@@ -55,9 +55,10 @@
       }
 
       #molecules {
+        position: fixed;
         margin: 0 auto;
         background: #F4F4F4;
-        z-index: 1;
+        z-index: 10;
         padding: 5px 10px;
         border-bottom: 1px solid #DFDFDF;
       }
@@ -77,10 +78,14 @@
 
       .molecule { background: #B4AED8; }
       #glucose > div { background: #B7C367; }
-      #atp > div, #gtp > div { background: #FFF97C; }
+      #atp > div, #gtp > div { background: #FFF97C; color: #DB4427;}
       #adp > div, #gdp > div { background: #FFF6B6; }
       #pi > div { background: #FEFDBD; }
       #water > div { background: #7BBEEA; }
+      #ubiquinone > div, #ubiquinol > div { background: #0E7700;}
+      #nad- > div { background: #404AFF; color: #E6E6E6;}
+      #nadh > div { background: #00F; color: white; }
+      #coa-sh > div { background: #FFDFC6; }
     </style>
     <link rel="stylesheet" href="enzymes.css">
   </head>
@@ -108,7 +113,6 @@
         <div id="ubiquinone"><p>0</p></div>
         <div id="ubiquinol"><p>0</p></div>
         <div id="oxaloacetate"><p>0</p></div>
-        <div id="various"><p>0</p></div>
       </div>
 
       <div id="membrane"></div>

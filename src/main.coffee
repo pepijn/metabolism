@@ -89,13 +89,12 @@ add_molecule = (substrate, name) ->
 
   container = $('#' + convert name)
   if container.length == 0
-    container = $('#various')
+    cell.cytoplasm.append molecule
   else
-    pos = container.offset()
+    pos = container.position()
     molecule.animate({ top: pos.top, left: pos.left }, 1000)
-
-  container.append(molecule)
-  container_count(container)
+    container.append(molecule)
+    container_count(container)
 
   molecule.removeClass('ui-draggable-disabled').effect('highlight').draggable({
     tolerance: 'touch',
@@ -150,6 +149,11 @@ class Enzyme extends Unit
   bind: (molecule) ->
     if @accepts(molecule)
       @bindings.push molecule
+      container = molecule.parent()
+      cell.cytoplasm.append(molecule)
+      pos = @element.position()
+      molecule.animate({ top: pos.top, left: pos.left }, 100)
+      container_count(container)
       molecule.draggable('disable')
       @element.addClass('occupied')
 

@@ -1,7 +1,8 @@
 window.enzymes = {}
 
 template =
-  enzyme: $('.enzyme')
+  enzyme: $('#templates .enzyme')
+  molecule: $('#templates .molecule')
 
 cell =
   cytoplasm: $('#cytoplasm')
@@ -19,9 +20,13 @@ list =
   'Aldolase':
     substrates: 'Fructose 1,6-biphosphate'
     products:   ['Dihydroxyacetone phosphate', 'Glyceraldehyde 3-phosphate']
-  'Triose phosphate isomerase':
-    substrates: ['Dihydroxyacetone phosphate']
-    products:   ['Glyceraldehyde 3-phosphate']
+  'Triose phosphate isomerase': [
+      substrates: ['Dihydroxyacetone phosphate']
+      products:   ['Glyceraldehyde 3-phosphate']
+    ,
+      substrates: ['Glyceraldehyde 3-phosphate']
+      products:   ['Dihydroxyacetone phosphate']
+    ]
   'Glyceraldehyde-3-phosphate dehydrogenase':
     substrates: ['Glyceraldehyde 3-phosphate', 'NAD+', 'Pi']
     products:   ['1,3-bisphosphate glycerate', 'NADH']
@@ -33,34 +38,110 @@ list =
     products:   '2-phosphoglycerate'
   'Enolase':
     substrates: '2-phosphoglycerate'
-    products:   ['H2O', 'Phosphoenolpyruvate']
+    products:   ['Water', 'Phosphoenolpyruvate']
   'Pyruvate kinase':
     substrates: ['Phosphoenolpyruvate', 'ADP']
     products:   ['Pyruvate', 'ATP']
+  'Pyruvate dehydrogenase':
+    substrates: ['CoA-SH', 'NAD+', 'Pyruvate']
+    products:   ['CO2', 'NADH', 'acetyl-CoA']
+  'Citrate synthase':
+    substrates: ['acetyl-CoA', 'Oxaloacetate', 'Water']
+    products:   ['CoA-SH', 'Citrate']
+  'Aconitase': [
+      substrates: 'Citrate'
+      products:   ['cis-Aconitate', 'Water']
+    ,
+      substrates: ['cis-Aconitate', 'Water']
+      products:   ['Isocitrate']
+    ]
+  'Isocitrate dehydrogenase': [
+      substrates: ['Isocitrate', 'NAD+']
+      products:   ['Oxalosuccinate', 'NADH', 'H+']
+    ,
+      substrates: 'Oxalosuccinate'
+      products:   ['alpha-Ketoglutarate', 'CO2']
+    ]
+  'alpha-Ketoglutarate dehydrogenase':
+    substrates: ['alpha-Ketoglutarate', 'NAD+', 'CoA-SH']
+    products:   ['Succinyl-CoA', 'NADH', 'H+', 'CO2']
+  'Succinyl-CoA synthetase':
+    substrates: ['Succinyl-CoA', 'GDP', 'Pi']
+    products:   ['Succinate', 'CoA-SH', 'GTP']
+  'Succinate dehydrogenase':
+    substrates: ['Succinate', 'Ubiquinone']
+    products:   ['Fumarate', 'Ubiquinol']
+  'Fumarase':
+    substrates: ['Fumarate', 'Water']
+    products:   'Malate'
+  'Malate dehydrogenase':
+    substrates: ['Malate', 'NAD+']
+    products:   ['Oxaloacetate', 'NADH', 'H+']
 
-molecule = (element) ->
-  element.text().replace(/^\s+|\s+$/g, '')
-#
+convert = (string) ->
+  string.toLowerCase().replace /\s|[+]/gi, '-'
+
 # molecule = (element) ->
 #   window.molecules[element.attr('id').replace('molecule-', '')]
 
+add_molecule = (substrate, name) ->
+  molecule = substrate.clone().text(name)
+
+  container = $('#' + convert name)
+  if container.length == 0
+    container = $('#various')
+  else
+    pos = container.offset()
+    molecule.animate({ top: pos.top, left: pos.left }, 1000)
+
+  container.append(molecule)
+  container_count(container)
+
+  molecule.removeClass('ui-draggable-disabled').effect('highlight').draggable({ snap: '#cell .enzyme', snapMode: 'inner' })
+
+container_count = (container) ->
+  container.find('p').text container.children().size() - 1
+
+for molecule in ["Glucose", "ATP", "ATP", "NAD+", "NAD+", "Pi", "Pi", "ADP", "ADP", "CoA-SH", "NAD+", "Oxaloacetate", "Water", "Ubiquinone", "GDP", "Pi", "Water", "NAD+", "NAD+", "NAD+"]
+  add_molecule(template.molecule, molecule)
+
 class Unit
   constructor: ->
-    @id = @name.toLowerCase().replace(' ', '-')
+    @id = convert @name
 
   build: (template) ->
     @element = template.clone().attr('id', @id).text(@name)
     @element.appendTo(cytoplasm)
 
 class Enzyme extends Unit
-  constructor: (@name, substrates, products) ->
+  constructor: (@name, reactions) ->
     super()
-    @substrates = _.flatten [substrates]
-    @products   = _.flatten [products]
+    @reactions  = _.flatten [reactions]
     @bindings   = []
 
+    for reaction in @reactions
+      reaction.substrates = _.flatten [reaction.substrates]
+      reaction.products   = _.flatten [reaction.products]
+
+  # Welke reacties zijn er nog allemaal mogelijk?
+  reaction: ->
+    if @bindings.length
+      reactions = []
+
+      for reaction in @reactions
+        if _.all(@molecules(), (mol) -> _.include reaction.substrates, mol)
+          reactions.push reaction
+
+      reactions
+    else
+      # Nog geen bindingen, alle reacties zijn mogelijk
+      @reactions
+
+  substrates: ->
+    _.flatten _.map @reaction(), (reaction) -> reaction.substrates
+
   accepts: (substrate) ->
-    _.include(_.difference(@substrates, @molecules()), molecule(substrate))
+    _.include(_.difference(@substrates(), @molecules()), substrate.text())
 
   bind: (molecule) ->
     if @accepts(molecule)
@@ -73,27 +154,29 @@ class Enzyme extends Unit
       @react()
 
   molecules: ->
-    _.map(@bindings, (element) -> molecule(element))
+    _.map(@bindings, (element) -> element.text())
 
   react: ->
-    if @bindings.length == @substrates.length
-      for product in @products
+    if @bindings.length == @substrates().length
+      for product in @reaction()[0].products
         binding = if _i >= @bindings.length then @bindings[0] else @bindings[_i]
-        product = binding.clone().appendTo(binding.parent()).text(product)
 
-        $('.molecule').removeClass('ui-draggable-disabled').draggable()
-        product.effect('highlight')
+        add_molecule(binding, product)
 
       for binding in @bindings
-        binding.hide('puff')
+        binding.hide('puff', {}, 100, ->
+          container = $(this).parent()
+          $(this).remove()
+          container_count(container)
+        )
       @bindings = []
 
       @element.effect('highlight')
       @element.removeClass('occupied')
 
 for name of list
-  enzyme = list[name]
-  enzyme = new Enzyme name, enzyme.substrates, enzyme.products
+  reactions = list[name]
+  enzyme = new Enzyme name, reactions
   window.enzymes[enzyme.id] = enzyme
 
   enzyme.build(template.enzyme).droppable({
@@ -111,4 +194,21 @@ for name of list
         enzyme.bind(ui.draggable)
   	})
 
-$('.molecule').draggable()
+# if false
+  # $('.molecule').draggable({ snap: '.enzyme', snapMode: 'inner' })
+# else
+  # $('.enzyme').draggable({ grid: [20, 10] })
+
+window.positions = ->
+  log = ''
+
+  $('#cell .enzyme').each((index, element)->
+    el = $(element)
+    offset = el.offset()
+    log += '#' + el.attr('id') + ' {'
+    log += '  top: ' + offset.top + 'px;'
+    log += '  left: ' + offset.left + 'px;'
+    log += '} '
+  )
+
+  console.log log

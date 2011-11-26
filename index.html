@@ -6,11 +6,13 @@
     <style type="text/css" media="screen">
       body {
         font-family: 'Gill Sans', sans-serif;
-      }
-
-      #cell {
-        margin: 0 auto;
-        width: 50%;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        margin: 0;
+        padding: 0;
       }
 
       .enzyme, .molecule {
@@ -18,9 +20,11 @@
       }
 
       #cell .enzyme {
+        position: absolute;
         padding: 10px;
         border: 1px solid #B5B5B5;
         background: #DEDEDE;
+        width: 190px;
         margin: 10px;
         text-align: center;
       }
@@ -35,13 +39,10 @@
         position: absolute;
         padding: 8px;
         border: 1px solid #B5B5B5;
-        width: 140px;
         text-align: center;
         margin: 5px;
-      }
-
-      #cytoplasm {
-        padding-top: 60px;
+        font-size: 12px;
+        z-index: 1;
       }
 
       .ui-draggable {
@@ -49,33 +50,67 @@
       }
 
       #cell .molecule.ui-draggable-disabled {
-        cursor: auto;
+        cursor: progress;
         background: #B0B0B0;
       }
 
-      #glucose, .molecule { background: #93BADE; }
-      #atp     { background: #FFD807; }
+      #molecules {
+        margin: 0 auto;
+        background: #F4F4F4;
+        z-index: 1;
+        padding: 5px 10px;
+        border-bottom: 1px solid #DFDFDF;
+      }
+
+      #molecules > div {
+        display: inline-block;
+        width: 70px;
+        padding: 0 12px;
+        margin: 2px 5px;
+        text-align: right;
+        border-right: 1px solid #DFDFDF;
+      }
+
+      #molecules > div p {
+        font-size: 11px;
+      }
+
+      .molecule { background: #93BADE; }
+      #atp > div     { background: #FFD807; }
     </style>
+    <link rel="stylesheet" href="enzymes.css">
   </head>
 
   <body>
-    <div class="enzyme"></div>
-    <div class="molecule"></div>
+    <div id="templates">
+      <div class="enzyme"></div>
+      <div class="molecule"></div>
+    </div>
 
     <div id="cell">
-      <div class="molecule">ADP</div>
-      <div class="molecule">NAD+</div>
-      <div class="molecule">Pi</div>
-      <div class="molecule">ADP</div>
-      <div class="molecule">Pi</div>
-      <div class="molecule">NAD+</div>
-      <div class="molecule">ATP</div>
-      <div class="molecule">Glucose</div>
-      <div class="molecule">ATP</div>
+      <div id="molecules">
+        <div id="glucose"><p>0</p></div>
+        <div id="atp"><p>0</p></div>
+        <div id="adp"><p>0</p></div>
+        <div id="pi"><p>0</p></div>
+        <div id="nad-"><p>0</p></div>
+        <div id="nadh"><p>0</p></div>
+        <div id="water"><p>0</p></div>
+        <div id="co2"><p>0</p></div>
+        <div id="coa-sh"><p>0</p></div>
+        <div id="h-"><p>0</p></div>
+        <div id="gdp"><p>0</p></div>
+        <div id="gtp"><p>0</p></div>
+        <div id="ubiquinone"><p>0</p></div>
+        <div id="oxaloacetate"><p>0</p></div>
+        <div id="various"><p>0</p></div>
+      </div>
 
       <div id="membrane"></div>
       <div id="cytoplasm"></div>
     </div>
+
+    <div id="positions"></div>
 
     <script type="text/javascript" src="vendor/jquery/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="vendor/jquery/js/jquery-ui-1.8.16.custom.min.js"></script>

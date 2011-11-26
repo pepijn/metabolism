@@ -97,7 +97,11 @@ add_molecule = (substrate, name) ->
   container.append(molecule)
   container_count(container)
 
-  molecule.removeClass('ui-draggable-disabled').effect('highlight').draggable({ snap: '#cell .enzyme', snapMode: 'inner' })
+  molecule.removeClass('ui-draggable-disabled').effect('highlight').draggable({
+    tolerance: 'touch',
+    revert: 'invalid',
+    start: -> $('.enzyme').droppable('enable')
+  })
 
 container_count = (container) ->
   container.find('p').text container.children().size() - 1
@@ -147,7 +151,6 @@ class Enzyme extends Unit
     if @accepts(molecule)
       @bindings.push molecule
       molecule.draggable('disable')
-
       @element.addClass('occupied')
 
       # Probeer de reactie
@@ -184,11 +187,12 @@ for name of list
       hoverClass: "hover",
       activate: (event, ui) ->
         enzyme = enzymes[$(this).attr('id')]
-
-        $(this).addClass('active') if enzyme.accepts(ui.draggable)
+        if enzyme.accepts(ui.draggable)
+          $(this).addClass('active')
+        else
+          $(this).droppable('disable')
       deactivate: ->
         $(this).removeClass('active')
-
       drop: (event, ui) ->
         enzyme = enzymes[$(this).attr('id')]
         enzyme.bind(ui.draggable)

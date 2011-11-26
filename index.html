@@ -51,7 +51,7 @@
 
       #cell .molecule.ui-draggable-disabled {
         cursor: progress;
-        background: #B0B0B0;
+        background: #999;
       }
 
       #molecules {
@@ -75,8 +75,12 @@
         font-size: 11px;
       }
 
-      .molecule { background: #93BADE; }
-      #atp > div     { background: #FFD807; }
+      .molecule { background: #B4AED8; }
+      #glucose > div { background: #B7C367; }
+      #atp > div, #gtp > div { background: #FFF97C; }
+      #adp > div, #gdp > div { background: #FFF6B6; }
+      #pi > div { background: #FEFDBD; }
+      #water > div { background: #7BBEEA; }
     </style>
     <link rel="stylesheet" href="enzymes.css">
   </head>
@@ -102,6 +106,7 @@
         <div id="gdp"><p>0</p></div>
         <div id="gtp"><p>0</p></div>
         <div id="ubiquinone"><p>0</p></div>
+        <div id="ubiquinol"><p>0</p></div>
         <div id="oxaloacetate"><p>0</p></div>
         <div id="various"><p>0</p></div>
       </div>

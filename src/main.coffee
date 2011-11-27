@@ -46,7 +46,22 @@ compartments =
       substrates: ['Phosphoenolpyruvate', 'ADP']
       products:   ['Pyruvate', 'ATP']
       # transport:  'mitochondrial matrix'
-  # 'intermembrane space':
+    'Pyruvate transport':
+      substrates: 'ATP'
+      products:   ['ADP', 'Pi']
+      transport:
+        substrates:  'Pyruvate'
+        destination: 'mitochondrial matrix'
+  'intermembrane space':
+    'ATP synthase':
+      substrates: ['ADP', 'Pi']
+      products:   'ATP'
+      transport:
+        substrates:  ['H+', 'H+', 'H+', 'H+']
+        destination: 'mitochondrial matrix'
+    'ATP/ADP transporter':
+      substrates: ['ADP', 'ATP']
+      products:   ['ATP', 'ADP']
   'mitochondrial matrix':
     'Pyruvate dehydrogenase':
       substrates: ['CoA-SH', 'NAD+', 'Pyruvate']
@@ -83,15 +98,21 @@ compartments =
     'Malate dehydrogenase':
       substrates: ['Malate', 'NAD+']
       products:   ['Oxaloacetate', 'NADH', 'H+']
-    'Complex 1':
+    'Complex I':
       substrates: 'NADH'
       products:   ['NAD+', 'H+']
       transport:
         substrates:  ['H+', 'H+', 'H+', 'H+']
         destination: 'intermembrane space'
+    'Complex III':
+      substrates: ['Ubiquinol', 'Ox Cyt c', 'Ox Cyt c']
+      products:   ['Ubiquinone', 'Red Cyt c', 'Red Cyt c', 'H+', 'H+']
+      transport:
+        substrates:  ['H+', 'H+']
+        destination: 'intermembrane space'
 
 convert = (string) ->
-  string.toLowerCase().replace /\s|[+]/gi, '-'
+  string.toLowerCase().replace /\s|[+/]/gi, '-'
 
 add_molecule = (substrate, name, transport) ->
   type     = convert name
@@ -99,7 +120,7 @@ add_molecule = (substrate, name, transport) ->
 
   if transport
     pos = cell[transport].position()
-    cell[transport].append molecule.animate({ top: pos.top, left: pos.left }, 1000)
+    cell[transport].append molecule.animate({ top: pos.top, left: pos.left }, 500)
   else
     substrate.parent().append molecule
 
@@ -108,7 +129,7 @@ add_molecule = (substrate, name, transport) ->
 
   if container.length == 1
     pos = container.position()
-    molecule.animate({ top: pos.top, left: pos.left }, 1000)
+    molecule.animate({ top: pos.top, left: pos.left }, 500)
     container.append(molecule)
     container_count()
   else
@@ -128,7 +149,8 @@ container_count = ->
 
 initial_molecules =
   'cytosol': ["ATP", "ATP", "Glucose", "NAD+", "NAD+", "Pi", "Pi", "ADP", "ADP"]
-  'mitochondrial matrix': ["Pyruvate", "CoA-SH", "NAD+", "Oxaloacetate", "Water", "Ubiquinone", "GDP", "Pi", "Water", "NAD+", "NAD+", "NAD+", 'NADH', 'H+', 'H+', 'H+', 'H+', 'H+']
+  'intermembrane space': ["Ubiquinone", 'Ox Cyt c', 'Ox Cyt c']
+  'mitochondrial matrix': ["CoA-SH", "NAD+", "Oxaloacetate", "Water", "GDP", "Pi", "Water", "NAD+", "NAD+", "NAD+", 'NADH', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'ADP', 'Succinate']
 
 for compartment, molecules of initial_molecules
   add_molecule(template.molecule, mol, compartment) for mol in molecules
@@ -167,44 +189,66 @@ class Enzyme extends Unit
   substrates: ->
     _.flatten _.map @reaction(), (reaction) -> reaction.substrates
 
+  molecules: ->
+    _.map(@bindings, (element) -> element.text())
+
   accepts: (substrate) ->
-    _.include(_.difference(@substrates(), @molecules()), substrate.text())
+    missing_bonds = @substrates()
+
+    for binding in @bindings
+      missing_bonds.splice(_.indexOf(missing_bonds, binding.text()), 1)
+
+    _.include(missing_bonds, substrate.text())
 
   bind: (molecule) ->
     if @accepts(molecule)
       @bindings.push molecule
 
       pos = @element.position()
-      molecule.animate({ top: pos.top, left: pos.left }, 100)
       molecule.draggable('disable')
       @element.addClass('occupied')
 
       # Probeer de reactie
       @react()
 
-  molecules: ->
-    _.map(@bindings, (element) -> element.text())
-
   react: ->
     if @bindings.length == @substrates().length
       reaction = @reaction()[0]
+      @bindings = _.sortBy @bindings, (molecule) -> molecule.text()
 
       for product in reaction.products
-        binding = if _i >= @bindings.length then @bindings[0] else @bindings[_i]
+        binding =  if _j >= @bindings.length then @bindings[0] else @bindings[_j]
 
-        add_molecule(binding, product) #reaction.transport if _j == 0)
+        add_molecule(binding, product)
 
       # Transport
-      # for substrate in reaction.transport.substrates
-      #   pos =
-      #   @element.closest('#cell > div').find('.container .' + convert substrate).first()).appendTo(cell[reaction.transport.destionation]).animate({ top: pos.top, left: pos.left }, 100)
+      if reaction.transport
+        pos = @element.position()
+        molecules  = @element.closest('#cell > div').find('.molecule')
+        substrates = _.flatten [reaction.transport.substrates]
+        products   = []
+
+        for molecule in molecules
+          # molecule =molecule
+          if $(molecule).text() == substrates[0]
+            products.push molecule
+            substrates.pop()
+
+        move = ->
+          $(products.pop()).animate { top: pos.top, left: pos.left }, 200, ->
+            molecule = $(this)
+            add_molecule molecule, molecule.text(), reaction.transport.destination
+            molecule.remove()
+            container_count molecule
+            move()
+
+        move()
 
       for binding in @bindings
-        binding.hide('puff', {}, 100, ->
+        binding.hide 'puff', {}, 100, ->
           container = $(this).parent()
           $(this).remove()
           container_count()
-        )
       @bindings = []
 
       @element.effect('highlight')
@@ -232,7 +276,7 @@ for compartment, enzymes of compartments
     })
 
 
-$('.enzyme').draggable({ grid: [20, 10] })
+$('.enzyme').draggable({ grid: [5, 10] })
 
 window.positions = ->
   log = ''
@@ -241,8 +285,8 @@ window.positions = ->
     el = $(element)
     offset = el.offset()
     log += '#' + el.attr('id') + ' {'
-    log += '  top: ' + offset.top + 'px;'
-    log += '  left: ' + offset.left + 'px;'
+    log += '  top: ' + (offset.top - 10) + 'px;'
+    log += '  left: ' + (offset.left - 10) + 'px;'
     log += '} '
   )
 

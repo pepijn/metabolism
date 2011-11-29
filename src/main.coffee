@@ -150,7 +150,7 @@ container_count = ->
 initial_molecules =
   'cytosol': ["ATP", "ATP", "Glucose", "NAD+", "NAD+", "Pi", "Pi", "ADP", "ADP"]
   'intermembrane space': ["Ubiquinone", 'Ox Cyt c', 'Ox Cyt c']
-  'mitochondrial matrix': ["CoA-SH", "NAD+", "Oxaloacetate", "Water", "GDP", "Pi", "Water", "NAD+", "NAD+", "NAD+", 'NADH', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'ADP', 'Succinate']
+  'mitochondrial matrix': ["CoA-SH", "NAD+", "Oxaloacetate", "Water", "GDP", "Pi", 'Pi', 'Pi', 'Pi', "Water", "NAD+", "NAD+", "NAD+", 'NADH', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'ADP']
 
 for compartment, molecules of initial_molecules
   add_molecule(template.molecule, mol, compartment) for mol in molecules
@@ -276,7 +276,7 @@ for compartment, enzymes of compartments
     })
 
 
-$('.enzyme').draggable({ grid: [5, 10] })
+# $('.enzyme').draggable({ grid: [5, 10] })
 
 window.positions = ->
   log = ''

@@ -10,111 +10,118 @@ cell =
   'mitochondrial matrix': $('#mitochondrial-matrix')
 
 compartments =
-  'cytosol':
-    'Hexokinase':
-      substrates: ['Glucose', 'ATP']
-      products:   ['Glucose 6-phosphate', 'ADP']
-    'Phosphoglucose isomerase':
-      substrates: 'Glucose 6-phosphate'
-      products:   'Fructose 6-phosphate'
-    'Phosphofructokinase-1':
-      substrates: ['Fructose 6-phosphate', 'ATP']
-      products:   ['Fructose 1,6-biphosphate', 'ADP']
-    'Aldolase':
-      substrates: 'Fructose 1,6-biphosphate'
-      products:   ['Dihydroxyacetone phosphate', 'Glyceraldehyde 3-phosphate']
-    'Triose phosphate isomerase': [
-        substrates: ['Dihydroxyacetone phosphate']
-        products:   ['Glyceraldehyde 3-phosphate']
+  "cytosol":
+    "Hexokinase":
+      "substrates": ["Glucose", "ATP"]
+      "products":   ["Glucose 6-phosphate", "ADP"]
+    "Phosphoglucose isomerase":
+      "substrates": "Glucose 6-phosphate"
+      "products":   "Fructose 6-phosphate"
+    "Phosphofructokinase-1":
+      "substrates": ["Fructose 6-phosphate", "ATP"]
+      "products":   ["Fructose 1,6-biphosphate", "ADP"]
+    "Aldolase":
+      "substrates": "Fructose 1,6-biphosphate"
+      "products":   ["Dihydroxyacetone phosphate", "Glyceraldehyde 3-phosphate"]
+    "Triose phosphate isomerase": [
+        "substrates": ["Dihydroxyacetone phosphate"]
+        "products":   ["Glyceraldehyde 3-phosphate"]
       ,
-        substrates: ['Glyceraldehyde 3-phosphate']
-        products:   ['Dihydroxyacetone phosphate']
+        "substrates": ["Glyceraldehyde 3-phosphate"]
+        "products":   ["Dihydroxyacetone phosphate"]
       ]
-    'Glyceraldehyde-3-phosphate dehydrogenase':
-      substrates: ['Glyceraldehyde 3-phosphate', 'NAD+', 'Pi']
-      products:   ['1,3-bisphosphate glycerate', 'NADH']
-    'Phosphoglycerate kinase':
-      substrates: ['1,3-bisphosphate glycerate', 'ADP']
-      products:   ['3-phosphoglycerate', 'ATP']
-    'Phosphoglycerate mutase':
-      substrates: '3-phosphoglycerate'
-      products:   '2-phosphoglycerate'
-    'Enolase':
-      substrates: '2-phosphoglycerate'
-      products:   ['Water', 'Phosphoenolpyruvate']
-    'Pyruvate kinase':
-      substrates: ['Phosphoenolpyruvate', 'ADP']
-      products:   ['Pyruvate', 'ATP']
-      # transport:  'mitochondrial matrix'
-    'Pyruvate transport':
-      substrates: 'ATP'
-      products:   ['ADP', 'Pi']
-      transport:
-        substrates:  'Pyruvate'
-        destination: 'mitochondrial matrix'
-  'intermembrane space':
-    'ATP synthase':
-      substrates: ['ADP', 'Pi']
-      products:   'ATP'
-      transport:
-        substrates:  ['H+', 'H+', 'H+', 'H+']
-        destination: 'mitochondrial matrix'
-    'ATP/ADP transporter':
-      substrates: ['ADP', 'ATP']
-      products:   ['ATP', 'ADP']
-  'mitochondrial matrix':
-    'Pyruvate dehydrogenase':
-      substrates: ['CoA-SH', 'NAD+', 'Pyruvate']
-      products:   ['CO2', 'NADH', 'acetyl-CoA']
-    'Citrate synthase':
-      substrates: ['acetyl-CoA', 'Oxaloacetate', 'Water']
-      products:   ['CoA-SH', 'Citrate']
-    'Aconitase': [
-        substrates: 'Citrate'
-        products:   ['cis-Aconitate', 'Water']
+    "Glyceraldehyde-3-phosphate dehydrogenase":
+      "substrates": ["Glyceraldehyde 3-phosphate", "NAD+", "Pi"]
+      "products":   ["1,3-bisphosphate glycerate", "NADH"]
+    "Phosphoglycerate kinase":
+      "substrates": ["1,3-bisphosphate glycerate", "ADP"]
+      "products":   ["3-phosphoglycerate", "ATP"]
+    "Phosphoglycerate mutase":
+      "substrates": "3-phosphoglycerate"
+      "products":   "2-phosphoglycerate"
+    "Enolase":
+      "substrates": "2-phosphoglycerate"
+      "products":   ["Water", "Phosphoenolpyruvate"]
+    "Pyruvate kinase":
+      "substrates": ["Phosphoenolpyruvate", "ADP"]
+      "products":   ["Pyruvate", "ATP"]
+      # "transport":  "mitochondrial matrix"
+    "Pyruvate transport":
+      "substrates": "ATP"
+      "products":   ["ADP", "Pi"]
+      "transport":
+        "substrates":  "Pyruvate"
+        "destination": "mitochondrial matrix"
+  "intermembrane space":
+    "ATP synthase":
+      "substrates": ["ADP", "Pi"]
+      "products":   "ATP"
+      "transport":
+        "substrates":  ["H+", "H+", "H+", "H+"]
+        "destination": "mitochondrial matrix"
+    "ATP/ADP Translocase":
+      "substrates": ["ADP", "ATP"]
+      "products":   ["ATP", "ADP"]
+  "mitochondrial matrix":
+    "Pyruvate dehydrogenase":
+      "substrates": ["CoA-SH", "NAD+", "Pyruvate"]
+      "products":   ["CO2", "NADH", "acetyl-CoA"]
+    "Citrate synthase":
+      "substrates": ["acetyl-CoA", "Oxaloacetate", "Water"]
+      "products":   ["CoA-SH", "Citrate"]
+    "Aconitase": [
+        "substrates": "Citrate"
+        "products":   ["cis-Aconitate", "Water"]
       ,
-        substrates: ['cis-Aconitate', 'Water']
-        products:   ['Isocitrate']
+        "substrates": ["cis-Aconitate", "Water"]
+        "products":   ["Isocitrate"]
       ]
-    'Isocitrate dehydrogenase': [
-        substrates: ['Isocitrate', 'NAD+']
-        products:   ['Oxalosuccinate', 'NADH', 'H+']
+    "Isocitrate dehydrogenase": [
+        "substrates": ["Isocitrate", "NAD+"]
+        "products":   ["Oxalosuccinate", "NADH", "H+"]
       ,
-        substrates: 'Oxalosuccinate'
-        products:   ['alpha-Ketoglutarate', 'CO2']
+        "substrates": "Oxalosuccinate"
+        "products":   ["alpha-Ketoglutarate", "CO2"]
       ]
-    'alpha-Ketoglutarate dehydrogenase':
-      substrates: ['alpha-Ketoglutarate', 'NAD+', 'CoA-SH']
-      products:   ['Succinyl-CoA', 'NADH', 'H+', 'CO2']
-    'Succinyl-CoA synthetase':
-      substrates: ['Succinyl-CoA', 'GDP', 'Pi']
-      products:   ['Succinate', 'CoA-SH', 'GTP']
-    'Succinate dehydrogenase':
-      substrates: ['Succinate', 'Ubiquinone']
-      products:   ['Fumarate', 'Ubiquinol']
-    'Fumarase':
-      substrates: ['Fumarate', 'Water']
-      products:   'Malate'
-    'Malate dehydrogenase':
-      substrates: ['Malate', 'NAD+']
-      products:   ['Oxaloacetate', 'NADH', 'H+']
-    'Complex I':
-      substrates: 'NADH'
-      products:   ['NAD+', 'H+']
-      transport:
-        substrates:  ['H+', 'H+', 'H+', 'H+']
-        destination: 'intermembrane space'
-    'Complex III':
-      substrates: ['Ubiquinol', 'Ox Cyt c', 'Ox Cyt c']
-      products:   ['Ubiquinone', 'Red Cyt c', 'Red Cyt c', 'H+', 'H+']
-      transport:
-        substrates:  ['H+', 'H+']
-        destination: 'intermembrane space'
+    "alpha-Ketoglutarate dehydrogenase":
+      "substrates": ["alpha-Ketoglutarate", "NAD+", "CoA-SH"]
+      "products":   ["Succinyl-CoA", "NADH", "H+", "CO2"]
+    "Succinyl-CoA synthetase":
+      "substrates": ["Succinyl-CoA", "GDP", "Pi"]
+      "products":   ["Succinate", "CoA-SH", "GTP"]
+    "Succinate dehydrogenase":
+      "substrates": ["Succinate", "Ubiquinone"]
+      "products":   ["Fumarate", "Ubiquinol"]
+    "Fumarase":
+      "substrates": ["Fumarate", "Water"]
+      "products":   "Malate"
+    "Malate dehydrogenase":
+      "substrates": ["Malate", "NAD+"]
+      "products":   ["Oxaloacetate", "NADH", "H+"]
+    "Complex I":
+      "substrates": "NADH"
+      "products":   ["NAD+", "H+"]
+      "transport":
+        "substrates":  ["H+", "H+", "H+", "H+"]
+        "destination": "intermembrane space"
+    "Complex III":
+      "substrates": ["Ubiquinol", "Cyt c (ox)", "Cyt c (ox)"]
+      "products":   ["Ubiquinone", "Cyt c (red)", "Cyt c (red)", "H+", "H+"]
+      "transport":
+        "substrates":  ["H+", "H+"]
+        "destination": "intermembrane space"
+    "Complex IV":
+      "substrates": ["Cyt c (red)", "Cyt c (red)", "Cyt c (red)", "Cyt c (red)", "Oxygen", "H+", "H+", "H+", "H+"]
+      "products":   ["Cyt c (ox)", "Cyt c (ox)", "Cyt c (ox)", "Cyt c (ox)", "Water", "Water"]
+      "transport":
+        "substrates":  ["H+", "H+", "H+", "H+"]
+        "destination": "intermembrane space"
 
 convert = (string) ->
-  string.toLowerCase().replace /\s|[+/]/gi, '-'
+  string.toLowerCase().replace /\s|[+/()]/gi, '-'
 
 add_molecule = (substrate, name, transport) ->
+  console.debug substrate
   type     = convert name
   molecule = substrate.clone().text(name).attr('class', 'molecule ' + type)
 
@@ -148,12 +155,32 @@ container_count = ->
     container.find('p').text container.children().size() - 1 if container.length
 
 initial_molecules =
-  'cytosol': ["ATP", "ATP", "Glucose", "NAD+", "NAD+", "Pi", "Pi", "ADP", "ADP"]
-  'intermembrane space': ["Ubiquinone", 'Ox Cyt c', 'Ox Cyt c']
-  'mitochondrial matrix': ["CoA-SH", "NAD+", "Oxaloacetate", "Water", "GDP", "Pi", "Water", "NAD+", "NAD+", "NAD+", 'NADH', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'H+', 'ADP', 'Succinate']
+  'cytosol':
+    'Glucose': 1
+    'ATP': 2
+    'NAD+': 2
+    'Pi': 2
+    'ADP': 2
+  'intermembrane space':
+    'Ubiquinone': 1
+    'Cyt c (ox)': 2
+    'Cyt c (red)': 2
+  'mitochondrial matrix':
+    'CoA-SH': 1
+    'NAD+': 10
+    'Oxaloacetate': 1
+    'Water': 1
+    'GDP': 30
+    'Pi': 30
+    'Oxygen': 10
+    'H+': 20
+    'ADP': 40
+
+    'Succinate': 1
 
 for compartment, molecules of initial_molecules
-  add_molecule(template.molecule, mol, compartment) for mol in molecules
+  for type, amount of molecules
+    add_molecule(template.molecule, type, compartment) for num in [1..amount]
 
 class Unit
   constructor: ->
@@ -217,8 +244,9 @@ class Enzyme extends Unit
       @bindings = _.sortBy @bindings, (molecule) -> molecule.text()
 
       for product in reaction.products
-        binding =  if _j >= @bindings.length then @bindings[0] else @bindings[_j]
+        binding = if _j >= @bindings.length then @bindings[0] else @bindings[_j]
 
+        # console.debug binding
         add_molecule(binding, product)
 
       # Transport
@@ -276,7 +304,7 @@ for compartment, enzymes of compartments
     })
 
 
-$('.enzyme').draggable({ grid: [5, 10] })
+# $('.enzyme').draggable({ grid: [5, 10] })
 
 window.positions = ->
   log = ''

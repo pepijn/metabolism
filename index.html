@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Glycolyse</title>
+    <title>Glycolyse/Citroenzuurcyclus/Oxidatieve fosforylering</title>
 
     <style type="text/css" media="screen">
       body {
@@ -29,9 +29,11 @@
         margin: 10px;
         text-align: center;
         max-width: 170px;
+        z-index: 5;
       }
 
-      #cell #atp-adp-transporter { width: 220px; max-width: 220px; }
+      #cell #atp-adp-translocase { width: 220px; max-width: 220px; }
+      #cell #complex-iv { width: 150px; max-width: 150px; }
 
       #cell .enzyme.active { background: #C96; }
       #cell .enzyme.active.hover { background: #FF940A; }
@@ -83,8 +85,8 @@
 
       .molecule { background: #B4AED8; }
       .glucose { background: #B7C367; }
-      .atp, .gtp { background: #FFF97C; color: #DB4427;}
-      .adp, .gdp { background: #FFF6B6; }
+      .atp, .gtp, .cyt-c--red- { background: #FFF97C; color: #DB4427;}
+      .adp, .gdp, .cyt-c--ox- { background: #FFF6B6; }
       .pi { background: #FEFDBD; }
       .water { background: #7BBEEA; }
       .ubiquinone { background: #0E7700; }
@@ -143,8 +145,8 @@
           <div class="h-"><p>0</p></div>
           <div class="ubiquinone"><p>0</p></div>
           <div class="ubiquinol"><p>0</p></div>
-          <div class="ox-cyt-c"><p>0</p></div>
-          <div class="red-cyt-c"><p>0</p></div>
+          <div class="cyt-c--ox-"><p>0</p></div>
+          <div class="cyt-c--red-"><p>0</p></div>
         </div>
       </div>
       <div id="mitochondrial-matrix">
@@ -162,6 +164,7 @@
           <div class="oxaloacetate"><p>0</p></div>
           <div class="adp"><p>0</p></div>
           <div class="atp"><p>0</p></div>
+
           <div class="succinate"><p>0</p></div>
         </div>
       </div>

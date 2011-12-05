@@ -12,7 +12,7 @@ set :use_sudo, false
 server 'plict.nl', :app, :web, :db, :primary => true
 
 set :deploy_to, "/var/www/#{application}"
-set :repository, "gitosis@plict.nl:#{application}.git"
+set :repository, "git@github.com:pepijn/#{application}.git"
 set :scm, "git"
 set :branch, "master"
 

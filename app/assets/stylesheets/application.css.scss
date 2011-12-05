@@ -126,3 +126,14 @@ body {
 .nad- { background: #404AFF; color: #E6E6E6;}
 .nadh { background: #00F; color: white; }
 .coa-sh { background: #FFDFC6; }
+
+#footer {
+  clear: both;
+  font-size: 11px;
+  text-align: center;
+  padding: 20px;
+
+  a {
+    color: black;
+  }
+}

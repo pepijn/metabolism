@@ -319,3 +319,7 @@ window.positions = ->
   )
 
   console.log log
+
+# iets met timeout hier doen voor souplesse
+$(window).scroll ->
+  $('.container').css 'margin-top', window.pageYOffset

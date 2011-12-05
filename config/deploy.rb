@@ -1,5 +1,5 @@
 # Stel de applicatie in
-set :application, 'rivm'
+set :application, 'metabolism'
 
 require 'capistrano_colors'
 $:.unshift(File.expand_path('./lib', ENV['rvm_path']))

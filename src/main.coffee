@@ -121,7 +121,6 @@ convert = (string) ->
   string.toLowerCase().replace /\s|[+/()]/gi, '-'
 
 add_molecule = (substrate, name, transport) ->
-  console.debug substrate
   type     = convert name
   molecule = substrate.clone().text(name).attr('class', 'molecule ' + type)
 
@@ -243,10 +242,9 @@ class Enzyme extends Unit
       reaction = @reaction()[0]
       @bindings = _.sortBy @bindings, (molecule) -> molecule.text()
 
-      for product in reaction.products
-        binding = if _j >= @bindings.length then @bindings[0] else @bindings[_j]
+      for product, n in reaction.products
+        binding = if n >= @bindings.length then @bindings[0] else @bindings[n]
 
-        # console.debug binding
         add_molecule(binding, product)
 
       # Transport
@@ -319,7 +317,3 @@ window.positions = ->
   )
 
   console.log log
-
-# iets met timeout hier doen voor souplesse
-$(window).scroll ->
-  $('.container').css 'margin-top', window.pageYOffset

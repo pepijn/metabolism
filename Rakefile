@@ -1,3 +1,7 @@
-task :default do
-  system 'coffee --compile --watch --output lib/ src/'
-end
+#!/usr/bin/env rake
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+
+require File.expand_path('../config/application', __FILE__)
+
+Metabolism::Application.load_tasks

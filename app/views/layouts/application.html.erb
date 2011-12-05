@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Glycolyse/Citroenzuurcyclus/Oxidatieve fosforylering</title>
+    <%= stylesheet_link_tag    "application" %>
+
+    <%= csrf_meta_tags %>
+  </head>
+
+  <body>
+    <div id="templates">
+      <div class="enzyme"></div>
+      <div class="molecule"></div>
+    </div>
+
+    <div id="cell">
+      <%= yield %>
+    </div>
+
+    <%= javascript_include_tag "application" %>
+  </body>
+</html>

@@ -52,12 +52,18 @@ compartments =
       "transport":
         "substrates":  "Pyruvate"
         "destination": "mitochondrial matrix"
+    "NADH transport":
+      "substrates": "ATP"
+      "products":   ["ADP", "Pi"]
+      "transport":
+        "substrates":  "NADH"
+        "destination": "mitochondrial matrix"
   "intermembrane space":
     "ATP synthase":
       "substrates": ["ADP", "Pi"]
       "products":   "ATP"
       "transport":
-        "substrates":  ["H+", "H+", "H+", "H+"]
+        "substrates":  ["H+", "H+", "H+"]
         "destination": "mitochondrial matrix"
     "ATP/ADP Translocase":
       "substrates": ["ADP", "ATP"]
@@ -65,7 +71,7 @@ compartments =
   "mitochondrial matrix":
     "Pyruvate dehydrogenase":
       "substrates": ["CoA-SH", "NAD+", "Pyruvate"]
-      "products":   ["CO2", "NADH", "acetyl-CoA"]
+      "products":   ["CO2", "NADH", "acetyl-CoA", "H+"]
     "Citrate synthase":
       "substrates": ["acetyl-CoA", "Oxaloacetate", "Water"]
       "products":   ["CoA-SH", "Citrate"]
@@ -159,23 +165,22 @@ initial_molecules =
     'ATP': 2
     'NAD+': 2
     'Pi': 2
-    'ADP': 2
+    'Pyruvate': 1
   'intermembrane space':
+    'H+': 10
     'Ubiquinone': 1
-    'Cyt c (ox)': 2
-    'Cyt c (red)': 2
+    # 'Ubiquinol': 1
+    'Cyt c (ox)': 4
+    # 'Cyt c (red)': 4
   'mitochondrial matrix':
+    'H+': 10
     'CoA-SH': 1
-    'NAD+': 10
     'Oxaloacetate': 1
-    'Water': 1
-    'GDP': 30
-    'Pi': 30
-    'Oxygen': 10
-    'H+': 20
-    'ADP': 40
-
-    'Succinate': 1
+    'GDP': 2
+    'Oxygen': 2
+    'Water': 3
+    'Pi': 16
+    'ADP': 11
 
 for compartment, molecules of initial_molecules
   for type, amount of molecules
@@ -240,6 +245,7 @@ class Enzyme extends Unit
   react: ->
     if @bindings.length == @substrates().length
       reaction = @reaction()[0]
+
       @bindings = _.sortBy @bindings, (molecule) -> molecule.text()
 
       for product, n in reaction.products
@@ -255,13 +261,12 @@ class Enzyme extends Unit
         products   = []
 
         for molecule in molecules
-          # molecule =molecule
-          if $(molecule).text() == substrates[0]
+          if $(molecule).text() == _.last substrates
             products.push molecule
             substrates.pop()
 
         move = ->
-          $(products.pop()).animate { top: pos.top, left: pos.left }, 200, ->
+          $(products.pop()).animate { top: pos.top, left: pos.left }, 600, ->
             molecule = $(this)
             add_molecule molecule, molecule.text(), reaction.transport.destination
             molecule.remove()
@@ -317,3 +322,12 @@ window.positions = ->
   )
 
   console.log log
+
+atp_synthesis = ->
+  matrix = cell['mitochondrial matrix']
+  if cell['intermembrane space'].find('.molecule.h-').length - 3 >= matrix.find('.molecule.h-').length && matrix.find('.molecule.adp').length > 0
+    for molecule in matrix.find('.molecule.adp:first, .molecule.pi:first')
+      window.enzymes['atp-synthase'].bind $(molecule)
+
+setInterval atp_synthesis, 2500
+
